@@ -17,8 +17,8 @@ add_library(SSD1306 STATIC lib/FileDescriptor.cxx
 						   lib/OledHardware.cxx
 						   lib/OledPixel.cxx
 						   lib/OledFont8x8.cxx
-						   lib/OledFont8x12.cxx
-						   lib/OledFont8x16.cxx
+						   #lib/OledFont8x12.cxx
+						   #lib/OledFont8x16.cxx
 						   lib/OledGraphics.cxx
 						   lib/OledI2C.cxx)
 
