@@ -44,7 +44,7 @@ bool is_number(const std::string &s)
                                       s.end(), [](unsigned char c) { return (!std::isdigit(c) && c != '.'); }) == s.end();
 }
 
-void setOLEDMode(byte oled, std::string bus, std::string title)
+void setOLEDMode(int oled, std::string bus, std::string title)
 {
     SSD1306::OledI2C oledtmp{bus, oledAddrs[oled]};
     oleds[oled] = oledtmp;
@@ -56,21 +56,21 @@ void updateoleds()
 {
     auto influxdb = influxdb::InfluxDBFactory::Get("http://localhost:8086?db=airquallog");
 
-    SSD1306::OledI2C oled1{"/dev/i2c-1", oledAddr1};
-    SSD1306::OledI2C oled2{"/dev/i2c-1", oledAddr2};
-    oled1.clear();
-    oled2.clear();
-    drawString8x8(SSD1306::OledPoint{0, 0}, "Print Air Qual:", SSD1306::PixelStyle::Set, oled1);
-    drawString8x8(SSD1306::OledPoint{0, 0}, "Room Air Qual:", SSD1306::PixelStyle::Set, oled2);
-    oled1.displayUpdate();
-    oled2.displayUpdate();
+    // SSD1306::OledI2C oled1{"/dev/i2c-1", oledAddr1};
+    // SSD1306::OledI2C oled2{"/dev/i2c-1", oledAddr2};
+    // oled1.clear();
+    // oled2.clear();
+    // drawString8x8(SSD1306::OledPoint{0, 0}, "Print Air Qual:", SSD1306::PixelStyle::Set, oled1);
+    // drawString8x8(SSD1306::OledPoint{0, 0}, "Room Air Qual:", SSD1306::PixelStyle::Set, oled2);
+    // oled1.displayUpdate();
+    // oled2.displayUpdate();
 
-    while (1)
+    while (sizeof(oledAddrs)>0)
     {
         if (time(NULL) - last_update >= 15)
         {
             last_update = time(NULL);
-            for (int i = 0; i < oledAddrs.size(); i++)
+            for (int i = 0; i < sizeof(oledAddrs)/sizeof(oledAddrs[0]); i++)
             {
                 oleds[i].clear();
                 influxdb::Point maxlog = influxdb->query("SELECT max(mean) FROM (SELECT mean(value) FROM Air_Quality WHERE (source = '" + to_string(i) + "') AND time >= now() -2h GROUP BY time(1m))").at(0);
