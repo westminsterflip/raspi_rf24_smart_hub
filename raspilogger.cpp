@@ -47,9 +47,10 @@ bool is_number(const std::string &s)
 void setOLEDMode(int oled, std::string bus, std::string title)
 {
     oledBus[oled] = bus;
-    if (title.length() <= 16){
+    if (title.length() <= 16)
+    {
         titles[oled] = title;
-        printf("setting: %s\n",title.c_str());
+        printf("setting: %s\n", title.c_str());
     }
 }
 
@@ -91,12 +92,17 @@ void updateOLEDs()
             {
                 SSD1306::OledI2C oled{oledBus[i], oledAddrs[i]};
                 oled.clear();
-                influxdb::Point maxlog = influxdb->query("SELECT max(mean) FROM (SELECT mean(value) FROM Air_Quality WHERE (source = '" + to_string(i) + "') AND time >= now() -2h GROUP BY time(1m))").at(0);
-                string maxlogs = maxlog.getFields();
-                maxlogs = maxlogs.substr(maxlogs.find('=') + 1, maxlogs.find('f'));
                 float maxlogi = 0;
-                if (is_number(maxlogs))
-                    maxlogi = stof(maxlogs);
+                std::vector<influxdb::Point> log = influxdb->query("SELECT max(mean) FROM (SELECT mean(value) FROM Air_Quality WHERE (source = '" + to_string(i) + "') AND time >= now() -2h GROUP BY time(1m))");
+                if (sizeof(log) > 0)
+                {
+                    influxdb::Point maxlog = log.at(0);
+                    string maxlogs = maxlog.getFields();
+                    maxlogs = maxlogs.substr(maxlogs.find('=') + 1, maxlogs.find('f'));
+
+                    if (is_number(maxlogs))
+                        maxlogi = stof(maxlogs);
+                }
                 int graphsize = 127 - 8 * ceil(log10((maxlogi == 0) ? 1 : maxlogi));
                 std::vector<influxdb::Point> pointset = influxdb->query("SELECT mean(value) FROM Air_Quality WHERE (source = '" + to_string(i) + "') AND time >= now() -2h GROUP BY time(1m) ORDER BY time DESC LIMIT " + to_string(graphsize));
                 drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, oled);
