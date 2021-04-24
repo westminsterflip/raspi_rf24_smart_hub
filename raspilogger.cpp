@@ -64,7 +64,7 @@ void updateOLEDs()
     // drawString8x8(SSD1306::OledPoint{0, 0}, "Room Air Qual:", SSD1306::PixelStyle::Set, oled2);
     // oled1.displayUpdate();
     // oled2.displayUpdate();
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < sizeof(oledAddrs) / sizeof(oledAddrs[0]); i++)
     {
         oleds[i]->clear();
         drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, *(oleds[i]));
@@ -210,7 +210,8 @@ int main(int argc, char **argv)
         setOLEDMode(1, "/dev/i2c-1", titles[1]);
         printf("oled initialized\n");
 
-        std::thread updateoleds(updateOLEDs);
+        //std::thread updateoleds(updateOLEDs);
+        updateOLEDs();
 
         RF24NetworkHeader header;
 
