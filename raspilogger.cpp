@@ -274,6 +274,7 @@ int main(int argc, char **argv)
                 string tmp = dataString.substr(2, 5);
                 rtrim(tmp);
                 int volt = -1;
+                printf("~%s~\n",tmp);
                 if (is_number(tmp))
                 {
                     printf("writing %s\n", tmp);
