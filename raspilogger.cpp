@@ -218,8 +218,8 @@ int main(int argc, char **argv)
         network.begin(90, this_node);
 
         printf("oled initializing\n");
-        setOLEDMode(0, "/dev/i2c-1", titles[0]);
-        setOLEDMode(1, "/dev/i2c-1", titles[1]);
+        setOLEDMode(0, "/dev/i2c-1", "Print Air Qual:");
+        setOLEDMode(1, "/dev/i2c-1", "Room Air Qual:");
         printf("oled initialized\n");
 
         if (sizeof(oledAddrs) > 0)
