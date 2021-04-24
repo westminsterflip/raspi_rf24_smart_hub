@@ -50,7 +50,6 @@ void setOLEDMode(int oled, std::string bus, std::string title)
     if (title.length() <= 16)
     {
         titles[oled] = title;
-        printf("setting: %s\n", title.c_str());
     }
 }
 
@@ -67,21 +66,13 @@ void updateOLEDs()
     // drawString8x8(SSD1306::OledPoint{0, 0}, "Room Air Qual:", SSD1306::PixelStyle::Set, oled2);
     // oled1.displayUpdate();
     // oled2.displayUpdate();
-    printf("%i\n", where++);
     for (int i = 0; i < sizeof(oledAddrs) / sizeof(oledAddrs[0]); i++)
     {
-
-        printf("%i\n", where++);
         SSD1306::OledI2C oled{oledBus[i], oledAddrs[i]};
-        printf("%i\n", where++);
         oled.clear();
-        printf("%i\n", where++);
-        printf("~%s~\n", titles[i]);
         drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, oled);
-        printf("%i\n", where++);
         oled.displayUpdate();
     }
-    printf("%i\n", where++);
 
     while (1)
     {
@@ -223,14 +214,12 @@ int main(int argc, char **argv)
         delay(5);
         network.begin(90, this_node);
 
-        printf("oled initializing\n");
-        setOLEDMode(0, "/dev/i2c-1", "Print Air Qual:");
-        setOLEDMode(1, "/dev/i2c-1", "Room Air Qual:");
-        printf("oled initialized\n");
+        setOLEDMode(1, "/dev/i2c-1", "Print Air Qual:");
+        setOLEDMode(0, "/dev/i2c-1", "Room Air Qual:");
 
         if (sizeof(oledAddrs) > 0)
-            //std::thread updateoleds(updateOLEDs);
-            updateOLEDs();
+            std::thread updateoleds(updateOLEDs);
+            //updateOLEDs();
 
         RF24NetworkHeader header;
 
