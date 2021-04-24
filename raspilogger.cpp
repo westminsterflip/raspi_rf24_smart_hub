@@ -205,8 +205,8 @@ int main(int argc, char **argv)
         delay(5);
         network.begin(90, this_node);
 
-        setOLEDMode(0, "/dev/i2c-1", oledAddrs[0]);
-        setOLEDMode(1, "/dev/i2c-1", oledAddrs[1]);
+        setOLEDMode(0, "/dev/i2c-1", titles[0]);
+        setOLEDMode(1, "/dev/i2c-1", titles[1]);
 
         std::thread updateoleds(updateOLEDs);
 
