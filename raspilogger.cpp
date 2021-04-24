@@ -94,7 +94,7 @@ void updateOLEDs()
                 oled.clear();
                 float maxlogi = 0;
                 std::vector<influxdb::Point> log = influxdb->query("SELECT max(mean) FROM (SELECT mean(value) FROM Air_Quality WHERE (source = '" + to_string(i) + "') AND time >= now() -2h GROUP BY time(1m))");
-                if (sizeof(log) > 0)
+                if (log.size() > 0)
                 {
                     influxdb::Point maxlog = log.at(0);
                     string maxlogs = maxlog.getFields();
@@ -109,7 +109,7 @@ void updateOLEDs()
                 drawString8x8(SSD1306::OledPoint{0, 8}, to_string((int)ceil(maxlogi)), SSD1306::PixelStyle::Set, oled);
                 drawString8x8(SSD1306::OledPoint{8 * floor(log10((maxlogi == 0) ? 1 : maxlogi)), 56}, "0", SSD1306::PixelStyle::Set, oled);
                 int oledpointx = 127;
-                if (maxlogi == 0)
+                if (maxlogi == 0 || log.size()==0)
                 {
                     SSD1306::line(SSD1306::OledPoint(oledpointx, 0), SSD1306::OledPoint(127, 0), SSD1306::PixelStyle::Set, oled);
                 }
