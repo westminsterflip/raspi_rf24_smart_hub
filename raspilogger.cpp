@@ -16,8 +16,8 @@
 
 using namespace std;
 
-#define OLEDHEIGHT 64;
-//#define OLEDHEIGHT 32;
+#define OLEDHEIGHT 64
+//#define OLEDHEIGHT 32
 
 //keep short names 2 char
 struct AirQuality
