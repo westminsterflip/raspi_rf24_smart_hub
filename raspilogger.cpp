@@ -271,7 +271,7 @@ int main(int argc, char **argv)
                 network.read(header, &data, sizeof(data));
                 printf("%s ard%i %s\n", ctime(&cur_time), header.from_node, data);
                 string dataString(data);
-                string tmp = dataString.substr(2, 5);
+                string tmp = dataString.substr(2, 3);
                 rtrim(tmp);
                 int volt = -1;
                 printf("~%s~\n",tmp.c_str());
