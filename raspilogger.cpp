@@ -217,9 +217,8 @@ int main(int argc, char **argv)
         setOLEDMode(1, "/dev/i2c-1", "Print Air Qual:");
         setOLEDMode(0, "/dev/i2c-1", "Room Air Qual:");
 
-        if (sizeof(oledAddrs) > 0)
+        //if (sizeof(oledAddrs) > 0)
             std::thread updateoleds(updateOLEDs);
-            //updateOLEDs();
 
         RF24NetworkHeader header;
 
