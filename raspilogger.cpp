@@ -18,20 +18,20 @@ using namespace std;
 
 struct AirQuality
 {
-    static const std::string fullName = "Air_Quality";
-    static const std::string shortName = "aq";
+    const std::string fullName = "Air_Quality";
+    const std::string shortName = "aq";
 };
 
 struct Thermometer
 {
-    static const std::string fullName = "Thermometer";
-    static const std::string shortName = "tm";
+    const std::string fullName = "Thermometer";
+    const std::string shortName = "tm";
 };
 
 struct Vent
 {
-    static const std::string fullName = "Vent";
-    static const std::string shortName = "v";
+    const std::string fullName = "Vent";
+    const std::string shortName = "v";
 };
 
 RF24 radio(22, 0);
@@ -64,7 +64,7 @@ bool is_number(const std::string &s)
                                       s.end(), [](unsigned char c) { return (!std::isdigit(c) && c != '.'); }) == s.end();
 }
 
-void setOLEDMode(int oled, std::string title, std::string mode)
+void setOLEDMode(int oled, std::string bus, std::string title, std::string mode)
 {
     oledBus[oled] = bus;
     oledMode[oled] = mode;
@@ -108,7 +108,7 @@ void updateOLEDs()
                         maxlogi = stof(maxlogs);
                 }
                 int graphsize = 127 - 8 * ceil(log10((maxlogi == 0) ? 1 : maxlogi));
-                std::vector<influxdb::Point> pointset = influxdb->query("SELECT mean(value) FROM " + oledMode(i) + " WHERE (source = '" + to_string(i + 1) + "') AND time >= now() -2h GROUP BY time(1m) ORDER BY time DESC LIMIT " + to_string(graphsize));
+                std::vector<influxdb::Point> pointset = influxdb->query("SELECT mean(value) FROM " + oledMode[i] + " WHERE (source = '" + to_string(i + 1) + "') AND time >= now() -2h GROUP BY time(1m) ORDER BY time DESC LIMIT " + to_string(graphsize));
                 drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, oled);
                 drawString8x8(SSD1306::OledPoint{0, 8}, to_string((int)ceil(maxlogi)), SSD1306::PixelStyle::Set, oled);
                 drawString8x8(SSD1306::OledPoint{8 * floor(log10((maxlogi == 0) ? 1 : maxlogi)), 56}, "0", SSD1306::PixelStyle::Set, oled);
@@ -153,8 +153,8 @@ int main(int argc, char **argv)
         delay(5);
         network.begin(90, this_node);
 
-        setOLEDMode(1, "Print Air Qual:", AirQuality::fullName);
-        setOLEDMode(0, "Room Air Qual:", AirQuality::fullName);
+        setOLEDMode(1, "/dev/i2c-1", "Print Air Qual:", AirQuality::fullName);
+        setOLEDMode(0, "/dev/i2c-1", "Room Air Qual:", AirQuality::fullName);
 
         std::thread updateoleds(updateOLEDs);
 
