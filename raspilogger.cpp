@@ -21,7 +21,7 @@ uint8_t oledAddrs[] = {0x3C, 0x3D}; //I2C addresses for SSH1306
 
 std::string titles[] = {"", ""};
 
-std::string oledBus[] = {"",""};
+std::string oledBus[] = {"", ""};
 
 time_t last_update = time(NULL);
 
@@ -63,20 +63,20 @@ void updateOLEDs()
     // drawString8x8(SSD1306::OledPoint{0, 0}, "Room Air Qual:", SSD1306::PixelStyle::Set, oled2);
     // oled1.displayUpdate();
     // oled2.displayUpdate();
-    printf("%i\n",where++);
+    printf("%i\n", where++);
     for (int i = 0; i < sizeof(oledAddrs) / sizeof(oledAddrs[0]); i++)
     {
-        
-    printf("%i\n",where++);
+
+        printf("%i\n", where++);
         SSD1306::OledI2C oled{oledBus[i], oledAddrs[i]};
-    printf("%i\n",where++);
+        printf("%i\n", where++);
         oled.clear();
-    printf("%i\n",where++);
+        printf("%i\n", where++);
         drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, oled);
-    printf("%i\n",where++);
+        printf("%i\n", where++);
         oled.displayUpdate();
     }
-    printf("%i\n",where++);
+    printf("%i\n", where++);
 
     while (sizeof(oledAddrs) > 0)
     {
@@ -85,7 +85,8 @@ void updateOLEDs()
             last_update = time(NULL);
             for (int i = 0; i < sizeof(oledAddrs) / sizeof(oledAddrs[0]); i++)
             {
-                oleds[i]->clear();
+                SSD1306::OledI2C oled{oledBus[i], oledAddrs[i]};
+                oled.clear();
                 influxdb::Point maxlog = influxdb->query("SELECT max(mean) FROM (SELECT mean(value) FROM Air_Quality WHERE (source = '" + to_string(i) + "') AND time >= now() -2h GROUP BY time(1m))").at(0);
                 string maxlogs = maxlog.getFields();
                 maxlogs = maxlogs.substr(maxlogs.find('=') + 1, maxlogs.find('f'));
@@ -94,13 +95,13 @@ void updateOLEDs()
                     maxlogi = stof(maxlogs);
                 int graphsize = 127 - 8 * ceil(log10((maxlogi == 0) ? 1 : maxlogi));
                 std::vector<influxdb::Point> pointset = influxdb->query("SELECT mean(value) FROM Air_Quality WHERE (source = '" + to_string(i) + "') AND time >= now() -2h GROUP BY time(1m) ORDER BY time DESC LIMIT " + to_string(graphsize));
-                drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, *(oleds[i]));
-                drawString8x8(SSD1306::OledPoint{0, 8}, to_string((int)ceil(maxlogi)), SSD1306::PixelStyle::Set, *(oleds[i]));
-                drawString8x8(SSD1306::OledPoint{8 * floor(log10((maxlogi == 0) ? 1 : maxlogi)), 56}, "0", SSD1306::PixelStyle::Set, *(oleds[i]));
+                drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, oled);
+                drawString8x8(SSD1306::OledPoint{0, 8}, to_string((int)ceil(maxlogi)), SSD1306::PixelStyle::Set, oled);
+                drawString8x8(SSD1306::OledPoint{8 * floor(log10((maxlogi == 0) ? 1 : maxlogi)), 56}, "0", SSD1306::PixelStyle::Set, oled);
                 int oledpointx = 127;
                 if (maxlogi == 0)
                 {
-                    SSD1306::line(SSD1306::OledPoint(oledpointx, 0), SSD1306::OledPoint(127, 0), SSD1306::PixelStyle::Set, *(oleds[i]));
+                    SSD1306::line(SSD1306::OledPoint(oledpointx, 0), SSD1306::OledPoint(127, 0), SSD1306::PixelStyle::Set, oled);
                 }
                 else
                 {
@@ -114,11 +115,11 @@ void updateOLEDs()
                             pointf = stof(points);
                         }
                         int oledpointy = round(63 - (pointf / maxlogi * 54));
-                        SSD1306::line(SSD1306::OledPoint(oledpointx, 63), SSD1306::OledPoint(oledpointx, oledpointy), SSD1306::PixelStyle::Set, *(oleds[i]));
+                        SSD1306::line(SSD1306::OledPoint(oledpointx, 63), SSD1306::OledPoint(oledpointx, oledpointy), SSD1306::PixelStyle::Set, oled;
                         oledpointx--;
                     }
                 }
-                oleds[i]->displayUpdate();
+                oled.displayUpdate();
             }
             //oled1.clear();
             //oled2.clear();
