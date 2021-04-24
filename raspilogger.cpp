@@ -16,6 +16,9 @@
 
 using namespace std;
 
+#define OLEDHEIGHT 64;
+//#define OLEDHEIGHT 32;
+
 //keep short names 2 char
 struct AirQuality
 {
@@ -86,7 +89,6 @@ void setOLEDMode(int oled, std::string bus, std::string title, std::string mode,
 
 void updateOLEDs()
 {
-    int where = 0;
     auto influxdb = influxdb::InfluxDBFactory::Get("http://localhost:8086?db=airquallog");
 
     for (int i = 0; i < sizeof(oledAddrs) / sizeof(oledAddrs[0]); i++)
@@ -121,11 +123,11 @@ void updateOLEDs()
                 std::vector<influxdb::Point> pointset = influxdb->query("SELECT mean(value) FROM " + oledMode[i] + " WHERE (source = '" + to_string(dataSourceNodes[i]) + "') AND time >= now() -2h GROUP BY time(1m) ORDER BY time DESC LIMIT " + to_string(graphsize));
                 drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, oled);
                 drawString8x8(SSD1306::OledPoint{0, 8}, to_string((int)ceil(maxlogi)), SSD1306::PixelStyle::Set, oled);
-                drawString8x8(SSD1306::OledPoint{8 * floor(log10((maxlogi == 0) ? 1 : maxlogi)), 56}, "0", SSD1306::PixelStyle::Set, oled);
+                drawString8x8(SSD1306::OledPoint{8 * floor(log10((maxlogi == 0) ? 1 : maxlogi)), OLEDHEIGHT - 8}, "0", SSD1306::PixelStyle::Set, oled);
                 int oledpointx = 127;
                 if (maxlogi == 0 || log.size() == 0)
                 {
-                    SSD1306::line(SSD1306::OledPoint(8, 63), SSD1306::OledPoint(127, 63), SSD1306::PixelStyle::Set, oled);
+                    SSD1306::line(SSD1306::OledPoint(8, OLEDHEIGHT - 1), SSD1306::OledPoint(127, OLEDHEIGHT - 1), SSD1306::PixelStyle::Set, oled);
                 }
                 else
                 {
@@ -138,8 +140,8 @@ void updateOLEDs()
                         {
                             pointf = stof(points);
                         }
-                        int oledpointy = round(63 - (pointf / maxlogi * 54));
-                        SSD1306::line(SSD1306::OledPoint(oledpointx, 63), SSD1306::OledPoint(oledpointx, oledpointy), SSD1306::PixelStyle::Set, oled);
+                        int oledpointy = round(OLEDHEIGHT - 1 - (pointf / maxlogi * (OLEDHEIGHT - 10)));
+                        SSD1306::line(SSD1306::OledPoint(oledpointx, OLEDHEIGHT - 1), SSD1306::OledPoint(oledpointx, oledpointy), SSD1306::PixelStyle::Set, oled);
                         oledpointx--;
                     }
                 }
