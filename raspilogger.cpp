@@ -84,30 +84,40 @@ bool is_number(const std::string &s)
 
 std::string getFullName(std::string shortName)
 {
-    switch (shortName)
+    if (shortName == AirQuality::shortName)
     {
-    case AirQuality::shortName:
         return AirQuality::fullName;
-    case Thermometer::shortName:
+    }
+    else if (shortName == Thermometer::shortName)
+    {
         return Thermometer::fullName;
-    case Vent::shortName:
+    }
+    else if (shortName == Vent::shortName)
+    {
         return Vent::fullName;
-    default:
+    }
+    else
+    {
         return "";
     }
 }
 
 std::string getShortName(std::string fullName)
 {
-    switch (fullName)
+    if (fullName == AirQuality::fullName)
     {
-    case AirQuality::fullName:
         return AirQuality::shortName;
-    case Thermometer::fullName:
+    }
+    else if (fullName == Thermometer::fullName)
+    {
         return Thermometer::shortName;
-    case Vent::fullName:
+    }
+    else if (fullName == Vent::fullName)
+    {
         return Vent::shortName;
-    default:
+    }
+    else
+    {
         return "";
     }
 }
@@ -116,29 +126,39 @@ std::string getFlagName(std::string name)
 {
     if (name.length() == 2)
     {
-        switch (name)
+        if (name == AirQuality::shortName)
         {
-        case AirQuality::shortName:
             return AirQuality::flagName;
-        case Thermometer::shortName:
-            return Thermometer::flatName;
-        case Vent::shortName:
+        }
+        else if (name == Thermometer::shortName)
+        {
+            return Thermometer::flagName;
+        }
+        else if (name == Vent::shortName)
+        {
             return Vent::flagName;
-        default:
+        }
+        else
+        {
             return "";
         }
     }
     else
     {
-        switch (name)
+        if (name == AirQuality::fullName)
         {
-        case AirQuality::fullName:
             return AirQuality::flagName;
-        case Thermometer::fullName:
+        }
+        else if (name == Thermometer::fullName)
+        {
             return Thermometer::flagName;
-        case Vent::fullName:
+        }
+        else if (name == Vent::fullName)
+        {
             return Vent::flagName;
-        default:
+        }
+        else
+        {
             return "";
         }
     }
