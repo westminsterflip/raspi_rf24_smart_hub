@@ -104,14 +104,14 @@ void updateOLEDs()
                         maxlogi = stof(maxlogs);
                 }
                 int graphsize = 127 - 8 * ceil(log10((maxlogi == 0) ? 1 : maxlogi));
-                std::vector<influxdb::Point> pointset = influxdb->query("SELECT mean(value) FROM Air_Quality WHERE (source = '" + to_string(i) + "') AND time >= now() -2h GROUP BY time(1m) ORDER BY time DESC LIMIT " + to_string(graphsize));
+                std::vector<influxdb::Point> pointset = influxdb->query("SELECT mean(value) FROM Air_Quality WHERE (source = '" + to_string(i+1) + "') AND time >= now() -2h GROUP BY time(1m) ORDER BY time DESC LIMIT " + to_string(graphsize));
                 drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, oled);
                 drawString8x8(SSD1306::OledPoint{0, 8}, to_string((int)ceil(maxlogi)), SSD1306::PixelStyle::Set, oled);
                 drawString8x8(SSD1306::OledPoint{8 * floor(log10((maxlogi == 0) ? 1 : maxlogi)), 56}, "0", SSD1306::PixelStyle::Set, oled);
                 int oledpointx = 127;
                 if (maxlogi == 0 || log.size()==0)
                 {
-                    SSD1306::line(SSD1306::OledPoint(oledpointx, 0), SSD1306::OledPoint(127, 0), SSD1306::PixelStyle::Set, oled);
+                    SSD1306::line(SSD1306::OledPoint(8, 63), SSD1306::OledPoint(127, 63), SSD1306::PixelStyle::Set, oled);
                 }
                 else
                 {
