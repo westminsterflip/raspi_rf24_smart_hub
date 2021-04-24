@@ -24,25 +24,31 @@ struct AirQuality
 {
     static const std::string fullName;
     static const std::string shortName;
+    static const std::string flagName;
 };
 const std::string AirQuality::fullName = "Air_Quality";
 const std::string AirQuality::shortName = "aq";
+const std::string AirQuality::flagName = "qualflag";
 
 struct Thermometer
 {
     static const std::string fullName;
     static const std::string shortName;
+    static const std::string flagName;
 };
 const std::string Thermometer::fullName = "Thermometer";
 const std::string Thermometer::shortName = "tm";
+const std::string Thermometer::flagName = "tempunit";
 
 struct Vent
 {
     static const std::string fullName;
     static const std::string shortName;
+    static const std::string flagName;
 };
 const std::string Vent::fullName = "Vent";
 const std::string Vent::shortName = "v_";
+const std::string Vent::flagName = "";
 
 RF24 radio(22, 0);
 uint8_t oledAddrs[] = {0x3C, 0x3D}; //I2C addresses for SSH1306
@@ -74,6 +80,68 @@ bool is_number(const std::string &s)
 {
     return !s.empty() && std::find_if(s.begin(),
                                       s.end(), [](unsigned char c) { return (!std::isdigit(c) && c != '.'); }) == s.end();
+}
+
+std::string getFullName(std::string shortName)
+{
+    switch (shortName)
+    {
+    case AirQuality::shortName:
+        return AirQuality::fullName;
+    case Thermometer::shortName:
+        return Thermometer::fullName;
+    case Vent::shortName:
+        return Vent::fullName;
+    default:
+        return "";
+    }
+}
+
+std::string getShortName(std::string fullName)
+{
+    switch (fullName)
+    {
+    case AirQuality::fullName:
+        return AirQuality::shortName;
+    case Thermometer::fullName:
+        return Thermometer::shortName;
+    case Vent::fullName:
+        return Vent::shortName;
+    default:
+        return "";
+    }
+}
+
+std::string getFlagName(std::string name)
+{
+    if (name.length() == 2)
+    {
+        switch (name)
+        {
+        case AirQuality::shortName:
+            return AirQuality::flagName;
+        case Thermometer::shortName:
+            return Thermometer::flatName;
+        case Vent::shortName:
+            return Vent::flagName;
+        default:
+            return "";
+        }
+    }
+    else
+    {
+        switch (name)
+        {
+        case AirQuality::fullName:
+            return AirQuality::flagName;
+        case Thermometer::fullName:
+            return Thermometer::flagName;
+        case Vent::fullName:
+            return Vent::flagName;
+        default:
+            return "";
+        }
+    }
 }
 
 void setOLEDMode(int oled, std::string bus, std::string title, std::string mode, int dataSourceNode)
@@ -140,7 +208,7 @@ void updateOLEDs()
                         {
                             pointf = stof(points);
                         }
-                        int oledpointy = round(OLEDHEIGHT - 1 - (pointf / maxlogi * (OLEDHEIGHT - 10)));
+                        int oledpointy = round(OLEDHEIGHT - 1 - (pointf / maxlogi * (OLEDHEIGHT - 10))); //top of highest line 1 pixel from bottom of title
                         SSD1306::line(SSD1306::OledPoint(oledpointx, OLEDHEIGHT - 1), SSD1306::OledPoint(oledpointx, oledpointy), SSD1306::PixelStyle::Set, oled);
                         oledpointx--;
                     }
@@ -179,18 +247,19 @@ int main(int argc, char **argv)
             while (network.available())
             {
                 time_t cur_time = time(NULL);
-                char data[5];
+                char data[7]; //data format {2 char type code}{max 3 digit info}{1 char flag}
                 network.read(header, &data, sizeof(data));
                 printf("%s ard%i %s\n", ctime(&cur_time), header.from_node, data);
                 string dataString(data);
-                string tmp = dataString.substr(0, 3);
+                string tmp = dataString.substr(2, 5);
                 rtrim(tmp);
                 int volt = -1;
                 if (is_number(tmp))
                 {
                     volt = stoi(tmp);
-                    string_view cleanString{&data[3], 1};
-                    influxdb->write(influxdb::Point{"Air_Quality"}.addField("value", volt).addTag("source", to_string(header.from_node)).addTag("qualflag", cleanString));
+                    string_view cleanString{&data[5], 1};
+                    string sourceType = dataString.substr(0, 2);
+                    influxdb->write(influxdb::Point{getFullName(sourceType)}.addField("value", volt).addTag("source", to_string(header.from_node)).addTag(getFlagName(sourceType), cleanString));
                 }
             }
         }
