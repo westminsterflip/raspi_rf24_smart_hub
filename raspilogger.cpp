@@ -54,6 +54,7 @@ void setOLEDMode(int oled, std::string bus, std::string title)
 
 void updateOLEDs()
 {
+    int where = 0;
     auto influxdb = influxdb::InfluxDBFactory::Get("http://localhost:8086?db=airquallog");
 
     // SSD1306::OledI2C oled1{"/dev/i2c-1", oledAddr1};
@@ -64,12 +65,16 @@ void updateOLEDs()
     // drawString8x8(SSD1306::OledPoint{0, 0}, "Room Air Qual:", SSD1306::PixelStyle::Set, oled2);
     // oled1.displayUpdate();
     // oled2.displayUpdate();
+    printf("%i\n",where++);
     for (int i = 0; i < sizeof(oledAddrs) / sizeof(oledAddrs[0]); i++)
     {
         oleds[i]->clear();
+    printf("%i\n",where++);
         drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, *(oleds[i]));
+    printf("%i\n",where++);
         oleds[i]->displayUpdate();
     }
+    printf("%i\n",where++);
 
     while (sizeof(oledAddrs) > 0)
     {
