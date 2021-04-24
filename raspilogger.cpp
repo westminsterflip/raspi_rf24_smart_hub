@@ -79,7 +79,7 @@ void updateOLEDs()
     }
     printf("%i\n", where++);
 
-    while (sizeof(oledAddrs) > 0)
+    while (1)
     {
         if (time(NULL) - last_update >= 15)
         {
@@ -219,8 +219,9 @@ int main(int argc, char **argv)
         setOLEDMode(1, "/dev/i2c-1", titles[1]);
         printf("oled initialized\n");
 
-        //std::thread updateoleds(updateOLEDs);
-        updateOLEDs();
+        if (sizeof(oledAddrs) > 0)
+            //std::thread updateoleds(updateOLEDs);
+            updateOLEDs();
 
         RF24NetworkHeader header;
 
