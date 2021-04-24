@@ -274,10 +274,8 @@ int main(int argc, char **argv)
                 string tmp = dataString.substr(2, 3);
                 rtrim(tmp);
                 int volt = -1;
-                printf("~%s~\n",tmp.c_str());
                 if (is_number(tmp))
                 {
-                    printf("writing %s\n", tmp);
                     volt = stoi(tmp);
                     string_view cleanString{&data[5], 1};
                     string sourceType = dataString.substr(0, 2);
