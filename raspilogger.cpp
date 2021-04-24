@@ -115,7 +115,7 @@ void updateOLEDs()
                             pointf = stof(points);
                         }
                         int oledpointy = round(63 - (pointf / maxlogi * 54));
-                        SSD1306::line(SSD1306::OledPoint(oledpointx, 63), SSD1306::OledPoint(oledpointx, oledpointy), SSD1306::PixelStyle::Set, oled;
+                        SSD1306::line(SSD1306::OledPoint(oledpointx, 63), SSD1306::OledPoint(oledpointx, oledpointy), SSD1306::PixelStyle::Set, oled);
                         oledpointx--;
                     }
                 }
