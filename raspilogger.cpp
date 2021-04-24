@@ -18,9 +18,10 @@ using namespace std;
 
 struct AirQuality
 {
-    static const std::string fullName = "Air_Quality";
+    static const std::string fullName;
     const std::string shortName = "aq";
 };
+AirQuality::fullName = "Air_Quality";
 
 struct Thermometer
 {
