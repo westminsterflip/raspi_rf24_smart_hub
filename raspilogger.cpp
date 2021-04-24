@@ -46,6 +46,7 @@ bool is_number(const std::string &s)
 
 void setOLEDMode(int oled, std::string bus, std::string title)
 {
+    oledBus[oled] = bus;
     if (title.length() <= 16)
         titles[oled] = title;
 }
