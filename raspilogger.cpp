@@ -73,6 +73,7 @@ void updateOLEDs()
         printf("%i\n", where++);
         oled.clear();
         printf("%i\n", where++);
+        printf("~%s~\n", titles[i]);
         drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, oled);
         printf("%i\n", where++);
         oled.displayUpdate();
