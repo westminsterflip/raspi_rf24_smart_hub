@@ -52,7 +52,7 @@ void setOLEDMode(int oled, std::string bus, std::string title)
         titles[oled] = title;
 }
 
-void updateoleds()
+void updateOLEDs()
 {
     auto influxdb = influxdb::InfluxDBFactory::Get("http://localhost:8086?db=airquallog");
 
