@@ -21,7 +21,7 @@ struct AirQuality
     static const std::string fullName;
     const std::string shortName = "aq";
 };
-AirQuality::fullName = "Air_Quality";
+const std::string AirQuality::fullName = "Air_Quality";
 
 struct Thermometer
 {
