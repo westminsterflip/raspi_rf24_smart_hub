@@ -72,7 +72,7 @@ void updateoleds()
             last_update = time(NULL);
             for (int i = 0; i < sizeof(oledAddrs)/sizeof(oledAddrs[0]); i++)
             {
-                oleds[i].clear();
+                oleds[i]->clear();
                 influxdb::Point maxlog = influxdb->query("SELECT max(mean) FROM (SELECT mean(value) FROM Air_Quality WHERE (source = '" + to_string(i) + "') AND time >= now() -2h GROUP BY time(1m))").at(0);
                 string maxlogs = maxlog.getFields();
                 maxlogs = maxlogs.substr(maxlogs.find('=') + 1, maxlogs.find('f'));
@@ -81,13 +81,13 @@ void updateoleds()
                     maxlogi = stof(maxlogs);
                 int graphsize = 127 - 8 * ceil(log10((maxlogi == 0) ? 1 : maxlogi));
                 std::vector<influxdb::Point> pointset = influxdb->query("SELECT mean(value) FROM Air_Quality WHERE (source = '" + to_string(i) + "') AND time >= now() -2h GROUP BY time(1m) ORDER BY time DESC LIMIT " + to_string(graphsize));
-                drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, oleds[i]);
-                drawString8x8(SSD1306::OledPoint{0, 8}, to_string((int)ceil(maxlogi)), SSD1306::PixelStyle::Set, oleds[i]);
-                drawString8x8(SSD1306::OledPoint{8 * floor(log10((maxlogi == 0) ? 1 : maxlogi)), 56}, "0", SSD1306::PixelStyle::Set, oleds[i]);
+                drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, *(oleds[i]));
+                drawString8x8(SSD1306::OledPoint{0, 8}, to_string((int)ceil(maxlogi)), SSD1306::PixelStyle::Set, *(oleds[i]));
+                drawString8x8(SSD1306::OledPoint{8 * floor(log10((maxlogi == 0) ? 1 : maxlogi)), 56}, "0", SSD1306::PixelStyle::Set, *(oleds[i]));
                 int oledpointx = 127;
                 if (maxlogi == 0)
                 {
-                    SSD1306::line(SSD1306::OledPoint(oledpointx, 0), SSD1306::OledPoint(127, 0), SSD1306::PixelStyle::Set, oleds[i]);
+                    SSD1306::line(SSD1306::OledPoint(oledpointx, 0), SSD1306::OledPoint(127, 0), SSD1306::PixelStyle::Set, *(oleds[i]));
                 }
                 else
                 {
@@ -101,11 +101,11 @@ void updateoleds()
                             pointf = stof(points);
                         }
                         int oledpointy = round(63 - (pointf / maxlogi * 54));
-                        SSD1306::line(SSD1306::OledPoint(oledpointx, 63), SSD1306::OledPoint(oledpointx, oledpointy), SSD1306::PixelStyle::Set, oleds[i]);
+                        SSD1306::line(SSD1306::OledPoint(oledpointx, 63), SSD1306::OledPoint(oledpointx, oledpointy), SSD1306::PixelStyle::Set, *(oleds[i]));
                         oledpointx--;
                     }
                 }
-                oleds[i].displayUpdate();
+                oleds[i]->displayUpdate();
             }
             //oled1.clear();
             //oled2.clear();
