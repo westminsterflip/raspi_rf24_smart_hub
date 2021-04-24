@@ -10,9 +10,9 @@
 #include <iostream>
 #include <thread>
 #include <math.h>
-#include "lib/OledI2C.h"
-#include "lib/OledFont8x8.h"
-#include "lib/OledGraphics.h"
+#include "OledI2C.h"
+#include "OledFont8x8.h"
+#include "OledGraphics.h"
 
 using namespace std;
 
