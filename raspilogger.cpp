@@ -8,11 +8,11 @@
 #include <InfluxDB.h>
 #include <InfluxDBFactory.h>
 #include <iostream>
-#include "OledFont8x8.h"
-#include "OledI2C.h"
 #include <thread>
 #include <math.h>
-#include "OledGraphics.h"
+#include "lib/OledI2C.h"
+#include "lib/OledFont8x8.h"
+#include "lib/OledGraphics.h"
 
 using namespace std;
 
@@ -68,6 +68,9 @@ void updateOLEDs()
     printf("%i\n",where++);
     for (int i = 0; i < sizeof(oledAddrs) / sizeof(oledAddrs[0]); i++)
     {
+        
+    printf("%i\n",where++);
+        SSD1306::OledI2C oled = *(oleds[i]);
     printf("%i\n",where++);
         oleds[i]->clear();
     printf("%i\n",where++);

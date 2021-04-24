@@ -45,74 +45,71 @@
 namespace SSD1306
 {
 
-//------------------------------------------------------------------------
+    //------------------------------------------------------------------------
 
-class OledI2C
-:
-    public OledHardware,
-    public OledPixel
-{
-public:
-
-    static constexpr int Width{128};
-    static constexpr int Height{64};
-    static constexpr int BytesPerBlock{32};
-    static constexpr int BufferSize{BytesPerBlock + 1};
-    static constexpr int Blocks{(Width * Height) / (8 * BytesPerBlock)};
-    static constexpr int ColumnsPerBlock{BytesPerBlock};
-    static constexpr int ColumnsPerRow{Width / ColumnsPerBlock};
-    static constexpr int DataOffset{1};
-
-    OledI2C(
-        const std::string& device,
-        uint8_t address);
-
-    virtual ~OledI2C();
-
-    OledI2C(const OledI2C&) = delete;
-    OledI2C& operator= (const OledI2C&) = delete;
-
-    void clear() override;
-    void fill() override;
-    bool isSetPixel(SSD1306::OledPoint p) const override;
-    void setPixel(SSD1306::OledPoint p) override;
-    void unsetPixel(SSD1306::OledPoint p) override;
-    void xorPixel(SSD1306::OledPoint p) override;
-
-    int width() const override { return Width; }
-    int height() const override { return Height; }
-
-    OledBitmap<Width, Height> getBitmap() const;
-
-    void displayInverse() const override;
-    void displayNormal() const override;
-    void displayOff() const override;
-    void displayOn() const override;
-    void displaySetContrast(uint8_t contrast) const override;
-    void displayUpdate() override;
-
-private:
-
-    void fillWith(uint8_t value);
-    void init() const;
-    void sendCommand(uint8_t command) const;
-    void sendCommand(uint8_t command, uint8_t value) const;
-    void sendCommand(uint8_t command, uint8_t v1, uint8_t v2) const;
-
-    FileDescriptor fd_;
-
-    struct PixelBlock
+    class OledI2C
+        : public OledHardware,
+          public OledPixel
     {
-        PixelBlock();
+    public:
+        static constexpr int Width{128};
+        static constexpr int Height{64};
+        static constexpr int BytesPerBlock{32};
+        static constexpr int BufferSize{BytesPerBlock + 1};
+        static constexpr int Blocks{(Width * Height) / (8 * BytesPerBlock)};
+        static constexpr int ColumnsPerBlock{BytesPerBlock};
+        static constexpr int ColumnsPerRow{Width / ColumnsPerBlock};
+        static constexpr int DataOffset{1};
 
-        std::array<uint8_t, BufferSize> bytes_;
-        bool dirty_;
+        OledI2C(
+            const std::string &device,
+            uint8_t address);
+
+        virtual ~OledI2C();
+
+        OledI2C(const OledI2C &) = delete;
+        OledI2C &operator=(const OledI2C &) = delete;
+
+        void clear() override;
+        void fill() override;
+        bool isSetPixel(SSD1306::OledPoint p) const override;
+        void setPixel(SSD1306::OledPoint p) override;
+        void unsetPixel(SSD1306::OledPoint p) override;
+        void xorPixel(SSD1306::OledPoint p) override;
+
+        int width() const override { return Width; }
+        int height() const override { return Height; }
+
+        OledBitmap<Width, Height> getBitmap() const;
+
+        void displayInverse() const override;
+        void displayNormal() const override;
+        void displayOff() const override;
+        void displayOn() const override;
+        void displaySetContrast(uint8_t contrast) const override;
+        void displayUpdate() override;
+
+    private:
+        void fillWith(uint8_t value);
+        void init() const;
+        void sendCommand(uint8_t command) const;
+        void sendCommand(uint8_t command, uint8_t value) const;
+        void sendCommand(uint8_t command, uint8_t v1, uint8_t v2) const;
+
+        FileDescriptor fd_;
+
+        struct PixelBlock
+        {
+            PixelBlock();
+
+            std::array<uint8_t, BufferSize> bytes_;
+            bool dirty_;
+        };
+
+        std::array<PixelBlock, Blocks> blocks_;
     };
 
-    std::array<PixelBlock, Blocks> blocks_;
-};
-
-//------------------------------------------------------------------------
+    //------------------------------------------------------------------------
 
 } // namespace SSD1306
 
