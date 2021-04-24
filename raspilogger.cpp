@@ -18,28 +18,30 @@ using namespace std;
 
 struct AirQuality
 {
-    const std::string fullName = "Air_Quality";
-    const std::string shortName = "aq";
+    static const std::string fullName = "Air_Quality";
+    static const std::string shortName = "aq";
 };
 
-struct Thermometer{
-    const std::string fullName = "Thermometer";
-    const std::string shortName = "tm";
-}
+struct Thermometer
+{
+    static const std::string fullName = "Thermometer";
+    static const std::string shortName = "tm";
+};
 
-struct Vent{
-    const std::string fullName = "Vent";
-    const std::string shortName = "v";
-}
+struct Vent
+{
+    static const std::string fullName = "Vent";
+    static const std::string shortName = "v";
+};
 
-    RF24 radio(22, 0);
+RF24 radio(22, 0);
 uint8_t oledAddrs[] = {0x3C, 0x3D}; //I2C addresses for SSH1306
 
 std::string titles[] = {"", ""};
 
 std::string oledBus[] = {"", ""};
 
-std::string oledMode[] = {"",""};
+std::string oledMode[] = {"", ""};
 
 time_t last_update = time(NULL);
 
@@ -95,7 +97,7 @@ void updateOLEDs()
                 SSD1306::OledI2C oled{oledBus[i], oledAddrs[i]};
                 oled.clear();
                 float maxlogi = 0;
-                std::vector<influxdb::Point> log = influxdb->query("SELECT max(mean) FROM (SELECT mean(value) FROM "+oledMode(i)+" WHERE (source = '" + to_string(i + 1) + "') AND time >= now() -2h GROUP BY time(1m))");
+                std::vector<influxdb::Point> log = influxdb->query("SELECT max(mean) FROM (SELECT mean(value) FROM " + oledMode[i] + " WHERE (source = '" + to_string(i + 1) + "') AND time >= now() -2h GROUP BY time(1m))");
                 if (log.size() > 0)
                 {
                     influxdb::Point maxlog = log.at(0);
@@ -106,7 +108,7 @@ void updateOLEDs()
                         maxlogi = stof(maxlogs);
                 }
                 int graphsize = 127 - 8 * ceil(log10((maxlogi == 0) ? 1 : maxlogi));
-                std::vector<influxdb::Point> pointset = influxdb->query("SELECT mean(value) FROM "+oledMode(i)+" WHERE (source = '" + to_string(i + 1) + "') AND time >= now() -2h GROUP BY time(1m) ORDER BY time DESC LIMIT " + to_string(graphsize));
+                std::vector<influxdb::Point> pointset = influxdb->query("SELECT mean(value) FROM " + oledMode(i) + " WHERE (source = '" + to_string(i + 1) + "') AND time >= now() -2h GROUP BY time(1m) ORDER BY time DESC LIMIT " + to_string(graphsize));
                 drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, oled);
                 drawString8x8(SSD1306::OledPoint{0, 8}, to_string((int)ceil(maxlogi)), SSD1306::PixelStyle::Set, oled);
                 drawString8x8(SSD1306::OledPoint{8 * floor(log10((maxlogi == 0) ? 1 : maxlogi)), 56}, "0", SSD1306::PixelStyle::Set, oled);
