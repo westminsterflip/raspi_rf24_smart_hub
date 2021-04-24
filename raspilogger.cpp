@@ -93,7 +93,7 @@ void updateOLEDs()
                 SSD1306::OledI2C oled{oledBus[i], oledAddrs[i]};
                 oled.clear();
                 float maxlogi = 0;
-                std::vector<influxdb::Point> log = influxdb->query("SELECT max(mean) FROM (SELECT mean(value) FROM Air_Quality WHERE (source = '" + to_string(i) + "') AND time >= now() -2h GROUP BY time(1m))");
+                std::vector<influxdb::Point> log = influxdb->query("SELECT max(mean) FROM (SELECT mean(value) FROM Air_Quality WHERE (source = '" + to_string(i+1) + "') AND time >= now() -2h GROUP BY time(1m))");
                 if (log.size() > 0)
                 {
                     influxdb::Point maxlog = log.at(0);
