@@ -21,7 +21,7 @@ uint8_t oledAddrs[] = {0x3C, 0x3D}; //I2C addresses for SSH1306
 
 std::string titles[] = {"", ""};
 
-SSD1306::OledI2C *oleds[2]; //make pointer array
+std::string oledBus[] = {"",""};
 
 time_t last_update = time(NULL);
 
@@ -46,8 +46,6 @@ bool is_number(const std::string &s)
 
 void setOLEDMode(int oled, std::string bus, std::string title)
 {
-    SSD1306::OledI2C oledtmp{bus, oledAddrs[oled]};
-    oleds[oled] = &oledtmp;
     if (title.length() <= 16)
         titles[oled] = title;
 }
@@ -70,13 +68,13 @@ void updateOLEDs()
     {
         
     printf("%i\n",where++);
-        SSD1306::OledI2C oled = *(oleds[i]);
+        SSD1306::OledI2C oled{oledBus[i], oledAddrs[i]};
     printf("%i\n",where++);
-        oleds[i]->clear();
+        oled.clear();
     printf("%i\n",where++);
-        drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, *(oleds[i]));
+        drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, oled);
     printf("%i\n",where++);
-        oleds[i]->displayUpdate();
+        oled.displayUpdate();
     }
     printf("%i\n",where++);
 
