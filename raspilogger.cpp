@@ -199,7 +199,7 @@ int main(int argc, char **argv)
         delay(5);
         network.begin(90, this_node);
 
-        std::thread updateOLEDs(updateOLEDs);
+        std::thread updateoleds(updateOLEDs);
 
         RF24NetworkHeader header;
 
