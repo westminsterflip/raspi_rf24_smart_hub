@@ -21,7 +21,7 @@ uint8_t oledAddrs[] = {0x3C, 0x3D}; //I2C addresses for SSH1306
 
 std::string titles[] = {"", ""};
 
-SSD1306::OledI2C* oleds[2];//make pointer array
+SSD1306::OledI2C *oleds[2]; //make pointer array
 
 time_t last_update = time(NULL);
 
@@ -64,13 +64,19 @@ void updateOLEDs()
     // drawString8x8(SSD1306::OledPoint{0, 0}, "Room Air Qual:", SSD1306::PixelStyle::Set, oled2);
     // oled1.displayUpdate();
     // oled2.displayUpdate();
+    for (int i = 0; i < sizeof(oledAddrs) / sizeof(oledAddrs[0]); i++)
+    {
+        oleds[i]->clear();
+        drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, *(oleds[i]));
+        oleds[i]->displayUpdate();
+    }
 
-    while (sizeof(oledAddrs)>0)
+    while (sizeof(oledAddrs) > 0)
     {
         if (time(NULL) - last_update >= 15)
         {
             last_update = time(NULL);
-            for (int i = 0; i < sizeof(oledAddrs)/sizeof(oledAddrs[0]); i++)
+            for (int i = 0; i < sizeof(oledAddrs) / sizeof(oledAddrs[0]); i++)
             {
                 oleds[i]->clear();
                 influxdb::Point maxlog = influxdb->query("SELECT max(mean) FROM (SELECT mean(value) FROM Air_Quality WHERE (source = '" + to_string(i) + "') AND time >= now() -2h GROUP BY time(1m))").at(0);
@@ -198,6 +204,9 @@ int main(int argc, char **argv)
         }
         delay(5);
         network.begin(90, this_node);
+
+        setOLEDMode(0, "/dev/i2c-1", oledAddrs[0]);
+        setOLEDMode(1, "/dev/i2c-1", oledAddrs[1]);
 
         std::thread updateoleds(updateOLEDs);
 
