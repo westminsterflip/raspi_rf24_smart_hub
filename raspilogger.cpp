@@ -288,7 +288,6 @@ int main(int argc, char **argv)
                     influxdb->write(influxdb::Point{getFullName(sourceType)}.addField("value", volt).addTag("source", to_string(header.from_node)).addTag(getFlagName(sourceType), cleanString));
                 }
             }
-            nanosleep((const struct timespec[]){{0, 100000000L}}, NULL);
         }
         //Could join thread here but will never be reached
     }
