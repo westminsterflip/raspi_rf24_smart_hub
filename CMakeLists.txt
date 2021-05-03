@@ -43,5 +43,5 @@ find_package(Boost COMPONENTS system REQUIRED)
 add_executable(raspilogger raspilogger.cpp)
 add_executable(oledupdater oledupdater.cpp)
 
-target_link_libraries(oledupdater PRIVATE SSD1306 InfluxData::InfluxDB Boost::system nlohmann_json::nlohmann_json)
-target_link_libraries(raspilogger PRIVATE InfluxData::InfluxDB Boost::system rf24-bcm rf24network nlohmann_json::nlohmann_json)
+target_link_libraries(oledupdater PRIVATE SSD1306 InfluxData::InfluxDB Boost::system)
+target_link_libraries(raspilogger PRIVATE InfluxData::InfluxDB Boost::system rf24-bcm rf24network)
