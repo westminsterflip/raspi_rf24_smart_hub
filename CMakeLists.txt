@@ -31,7 +31,7 @@ add_library(SSD1306 STATIC lib/FileDescriptor.cxx
 
 include_directories(${PROJECT_SOURCE_DIR}/lib)
 
-add_subdirectory(nlohmann_json)
+include_directories(nlohmann_json)
 
 #set(EXTRA_LIBS ${EXTRA_LIBS} HD44780Lcd)
 
