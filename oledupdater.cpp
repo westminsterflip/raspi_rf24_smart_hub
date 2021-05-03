@@ -65,13 +65,6 @@ void updateOLEDs()
     {
         SSD1306::OledI2C oled{oledBus[i], oledAddrs[i]};
         oled.clear();
-        drawString8x8(SSD1306::OledPoint{0, 0}, titles[i], SSD1306::PixelStyle::Set, oled);
-        oled.displayUpdate();
-    }
-    for (int i = 0; i < sizeof(oledAddrs) / sizeof(oledAddrs[0]); i++)
-    {
-        SSD1306::OledI2C oled{oledBus[i], oledAddrs[i]};
-        oled.clear();
         float maxlogi = 0;
         std::vector<influxdb::Point> log = influxdb->query("SELECT max(mean) FROM (SELECT mean(value) FROM " + oledMode[i] + " WHERE (source = '" + to_string(dataSourceNodes[i]) + "') AND time >= now() -2h GROUP BY time(1m))");
         if (log.size() > 0)
