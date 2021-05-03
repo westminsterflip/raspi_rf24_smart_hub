@@ -37,4 +37,4 @@ add_executable(raspilogger raspilogger.cpp)
 add_executable(oledupdater oledupdater.cpp)
 
 target_link_libraries(oledupdater PRIVATE SSD1306 InfluxData::InfluxDB Boost::system)
-target_link_libraries(raspilogger PRIVATE InfluxData::InfluxDB Boost::system lrf24-bcm lrf24network)
+target_link_libraries(raspilogger PRIVATE InfluxData::InfluxDB Boost::system rf24-bcm rf24network)
