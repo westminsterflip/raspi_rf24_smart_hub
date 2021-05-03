@@ -286,9 +286,6 @@ int main(int argc, char **argv)
                     string_view cleanString{&data[5], 1};
                     string sourceType = dataString.substr(0, 2);
                     influxdb->write(influxdb::Point{getFullName(sourceType)}.addField("value", volt).addTag("source", to_string(header.from_node)).addTag(getFlagName(sourceType), cleanString));
-                    if(sourceType == "tm" && vents.size() != 0){
-
-                    }
                 }
             }
             nanosleep((const struct timespec[]){{0, 100000000L}}, NULL);
