@@ -44,8 +44,6 @@ const std::string Vent::flagName = "istherm";
 
 RF24 radio(22, 0);
 
-int dataSourceNodes[2];
-
 RF24Network network(radio);
 // Address of our node in Octal format
 const uint16_t this_node = 00;
