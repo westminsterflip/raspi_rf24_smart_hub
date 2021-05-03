@@ -12,7 +12,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 set(JSON_LIB_URL "https://github.com/nlohmann/json/releases/latest/download/json.hpp")
-set(JSON_DL_PATH "lib/json.hpp")
+set(JSON_DL_PATH "${PROJECT_SOURCE_DIR}/lib/json.hpp")
 
 if (NOT EXISTS JSON_DL_PATH)
     file(DOWNLOAD "${JSON_LIB_URL}" "${JSON_DL_PATH}")
