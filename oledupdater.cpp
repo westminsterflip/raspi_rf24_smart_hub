@@ -4,6 +4,7 @@
 #include <InfluxDB.h>
 #include <InfluxDBFactory.h>
 #include <math.h>
+#include <json.hpp>
 
 using namespace std;
 

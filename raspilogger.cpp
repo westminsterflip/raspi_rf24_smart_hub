@@ -8,6 +8,7 @@
 #include <InfluxDB.h>
 #include <InfluxDBFactory.h>
 #include <iostream>
+#include <json.hpp>
 
 using namespace std;
 
